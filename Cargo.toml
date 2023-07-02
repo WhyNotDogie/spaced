@@ -1,0 +1,16 @@
+[package]
+name = "spaced"
+version = "0.0.0"
+edition = "2021"
+
+[features]
+default = []
+full = ["serde"]
+serde = ["dep:serde"]
+
+[dependencies]
+anyhow = "1.0.71"
+serde = { version = "1.0.164", optional = true, features = ["derive", "rc"] }
+
+[dev-dependencies]
+spaced = { path = ".", features = ["full"] }
