@@ -29,37 +29,3 @@ impl Color {
         }
     }
 }
-
-/// A handle to an image. Under the hood, this is just an `Arc<[u8]>` (a reference), so you don't have to worry about passing references to it everywhere and you can just run .clone().
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Image {
-    handle: Arc<[u8]>,
-    pub encoding: ImageEncoding
-}
-
-impl Clone for Image {
-    fn clone(&self) -> Self {
-        Self {
-            handle: Arc::clone(&self.handle),
-            encoding: self.encoding.clone()
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-pub enum ImageEncoding {
-    Jpg,
-    #[default]
-    Png
-}
-
-impl Image {
-    pub fn raw_data(&self) -> &[u8] {
-        &self.handle
-    }
-    pub fn encoding(&self) -> ImageEncoding {
-        self.encoding
-    }
-}
