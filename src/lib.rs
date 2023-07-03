@@ -1,5 +1,6 @@
 use std::{panic::{self, UnwindSafe}, process, any::Any};
 use error::*;
+use serde::{Serialize, Deserialize};
 
 pub use anyhow as __anyhow;
 
@@ -19,13 +20,13 @@ pub trait Game<Man: Manager> where Self: Sized {
 
 pub trait Graphics: UnwindSafe + Sized {
     type Error: Into<anyhow::Error>;
-    fn draw<T: Draw + Any>(&mut self, drawable: T) {
+    fn draw<T: Draw + Any>(&mut self, drawable: T) -> Self::Error {
         drawable.draw(self)
     }
 }
 
 pub trait Draw {
-    fn draw<Gfx: Graphics>(&self, gfx: &mut Gfx);
+    fn draw<Gfx: Graphics>(&self, gfx: &mut Gfx) -> Gfx::Error;
 }
 
 pub trait ErrorHook {
@@ -33,7 +34,8 @@ pub trait ErrorHook {
 }
 
 pub trait Window: UnwindSafe {
-    fn close(&mut self);
+    type Error: Into<anyhow::Error>;
+    fn close(&mut self) -> std::result::Result<(), Self::Error>;
     fn closed(&self) -> bool;
 }
 
@@ -62,6 +64,8 @@ pub fn run<G: Game<Man>, Hook: ErrorHook, Man: Manager>(mut man: Man) {
     };
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct DefaultErrorHook {}
 
 impl ErrorHook for DefaultErrorHook {
@@ -72,4 +76,14 @@ impl ErrorHook for DefaultErrorHook {
             panic!("Error: {}", err)
         }
     }
+}
+
+pub mod prelude {
+    pub use crate::{
+        Game,
+        DefaultErrorHook,
+        error::{Error, Result},
+        types::Color,
+        run
+    };
 }

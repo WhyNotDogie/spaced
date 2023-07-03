@@ -1,4 +1,4 @@
-use crate::error::Result;
+use crate::prelude::*;
 
 struct Man {
     closed: bool
@@ -10,8 +10,10 @@ impl crate::Graphics for Man {
     type Error = anyhow::Error;
 }
 impl crate::Window for Man {
-    fn close(&mut self) {
-        self.closed = true
+    type Error = anyhow::Error;
+    fn close(&mut self) -> std::result::Result<(), Self::Error> {
+        self.closed = true;
+        Ok(())
     }
     fn closed(&self) -> bool {
         self.closed

@@ -14,3 +14,8 @@ serde = { version = "1.0.164", optional = true, features = ["derive", "rc"] }
 
 [dev-dependencies]
 spaced = { path = ".", features = ["full"] }
+
+[workspace]
+members = [
+    "spaced_man"
+]

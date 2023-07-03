@@ -1,0 +1,19 @@
+[package]
+name = "spaced_man"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = []
+full = ["serde"]
+serde = ["dep:serde", "spaced/serde"]
+
+[dependencies]
+spaced = { path = "../" }
+serde = { version = "1.0.164", optional = true }
+
+
+[dev-dependencies]
+spaced_man = { path = ".", features = ["full"] }
